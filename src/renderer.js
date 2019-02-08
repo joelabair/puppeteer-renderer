@@ -37,10 +37,19 @@ class Renderer {
       const { timeout, waitUntil, ...extraOptions } = options
       page = await this.createPage(url, { timeout, waitUntil })
 
-      const { scale, displayHeaderFooter, printBackground, landscape } = extraOptions
+      const {
+        scale,
+        displayHeaderFooter,
+        printBackground,
+        preferCSSPageSize,
+        landscape,
+      } = extraOptions
       const buffer = await page.pdf({
         ...extraOptions,
-        scale: Number(scale),
+        scale: Number(scale || 1),
+        paperWidth: Number(extraOptions.width || 0) || '8.5in',
+        paperHeight: Number(extraOptions.height || 0) || '11in',
+        preferCSSPageSize: preferCSSPageSize === 'true',
         displayHeaderFooter: displayHeaderFooter === 'true',
         printBackground: printBackground === 'true',
         landscape: landscape === 'true',
@@ -85,7 +94,7 @@ class Renderer {
 }
 
 async function create() {
-  const browser = await puppeteer.launch({ args: ['--no-sandbox'] })
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'], ignoreHTTPSErrors: true })
   return new Renderer(browser)
 }
 
