@@ -39,6 +39,9 @@ RUN chmod +x /usr/local/bin/dumb-init
 
 RUN npm install pm2 -g
 
+# just show us what base distro we're on
+RUN lsb_release -a
+
 USER node
 
 COPY . /opt/app

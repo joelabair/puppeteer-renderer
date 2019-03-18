@@ -4,8 +4,6 @@ const puppeteer = require("puppeteer");
 
 const chromiumArgs = [
   '--deterministic-fetch',
-  '--disable-accelerated-2d-canvas',
-  '--disable-background-timer-throttling',
   '--disable-breakpad',
   '--disable-client-side-phishing-detection',
   '--disable-cloud-import',
@@ -22,8 +20,7 @@ const chromiumArgs = [
   '--disable-popup-blocking',
   '--disable-print-preview',
   '--disable-prompt-on-repost',
-  '--disable-setuid-sandbox',
-  '--disable-software-rasterizer',
+  //'--disable-setuid-sandbox',
   '--disable-speech-api',
   '--disable-sync',
   '--disable-tab-for-desktop-share',
@@ -39,12 +36,9 @@ const chromiumArgs = [
   '--mute-audio',
   '--no-default-browser-check',
   '--no-first-run',
-  '--no-pings',
-  '--no-sandbox',
   '--no-zygote',
-  '--password-store=basic',
-  '--prerender-from-omnibox=disabled',
-  '--use-mock-keychain',
+  '--no-pings',
+  //'--no-sandbox',
   '--single-process'
 ];
 
@@ -146,14 +140,13 @@ class Renderer {
   }
 
   async cleanUp() {
-    await this.browser.close();
-    this.browser.process().kill('SIGKILL');
-    this.browser = null;
-    this.browser = await puppeteer.launch({
+    let browser = await puppeteer.launch({
       args: chromiumArgs,
       ignoreHTTPSErrors: true,
       timeout: 10000
     });
+    await this.browser.close();
+    this.browser = browser;
   }
 
   async close() {
