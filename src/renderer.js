@@ -2,6 +2,52 @@
 
 const puppeteer = require("puppeteer");
 
+const chromiumArgs = [
+  '--deterministic-fetch',
+  '--disable-accelerated-2d-canvas',
+  '--disable-background-timer-throttling',
+  '--disable-breakpad',
+  '--disable-client-side-phishing-detection',
+  '--disable-cloud-import',
+  '--disable-default-apps',
+  '--disable-dev-shm-usage',
+  '--disable-extensions',
+  '--disable-gesture-typing',
+  '--disable-gpu',
+  '--disable-hang-monitor',
+  '--disable-infobars',
+  '--disable-notifications',
+  '--disable-offer-store-unmasked-wallet-cards',
+  '--disable-offer-upload-credit-cards',
+  '--disable-popup-blocking',
+  '--disable-print-preview',
+  '--disable-prompt-on-repost',
+  '--disable-setuid-sandbox',
+  '--disable-software-rasterizer',
+  '--disable-speech-api',
+  '--disable-sync',
+  '--disable-tab-for-desktop-share',
+  '--disable-translate',
+  '--disable-voice-input',
+  '--disable-wake-on-wifi',
+  '--enable-async-dns',
+  '--enable-simple-cache-backend',
+  '--enable-tcp-fast-open',
+  '--hide-scrollbars',
+  '--media-cache-size=33554432',
+  '--metrics-recording-only',
+  '--mute-audio',
+  '--no-default-browser-check',
+  '--no-first-run',
+  '--no-pings',
+  '--no-sandbox',
+  '--no-zygote',
+  '--password-store=basic',
+  '--prerender-from-omnibox=disabled',
+  '--use-mock-keychain',
+  '--single-process'
+];
+
 class Renderer {
   constructor(browser) {
     this.browser = browser;
@@ -104,7 +150,7 @@ class Renderer {
     this.browser.process().kill('SIGKILL');
     this.browser = null;
     this.browser = await puppeteer.launch({
-      args: ["--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*', '--deterministic-fetch'],
+      args: chromiumArgs,
       ignoreHTTPSErrors: true,
       timeout: 10000
     });
@@ -117,51 +163,7 @@ class Renderer {
 
 async function create() {
   const browser = await puppeteer.launch({
-    args: [
-      '--deterministic-fetch',
-      '--disable-accelerated-2d-canvas',
-      '--disable-background-timer-throttling',
-      '--disable-breakpad',
-      '--disable-client-side-phishing-detection',
-      '--disable-cloud-import',
-      '--disable-default-apps',
-      '--disable-dev-shm-usage',
-      '--disable-extensions',
-      '--disable-gesture-typing',
-      '--disable-gpu',
-      '--disable-hang-monitor',
-      '--disable-infobars',
-      '--disable-notifications',
-      '--disable-offer-store-unmasked-wallet-cards',
-      '--disable-offer-upload-credit-cards',
-      '--disable-popup-blocking',
-      '--disable-print-preview',
-      '--disable-prompt-on-repost',
-      '--disable-setuid-sandbox',
-      '--disable-software-rasterizer',
-      '--disable-speech-api',
-      '--disable-sync',
-      '--disable-tab-for-desktop-share',
-      '--disable-translate',
-      '--disable-voice-input',
-      '--disable-wake-on-wifi',
-      '--enable-async-dns',
-      '--enable-simple-cache-backend',
-      '--enable-tcp-fast-open',
-      '--hide-scrollbars',
-      '--media-cache-size=33554432',
-      '--metrics-recording-only',
-      '--mute-audio',
-      '--no-default-browser-check',
-      '--no-first-run',
-      '--no-pings',
-      '--no-sandbox',
-      '--no-zygote',
-      '--password-store=basic',
-      '--prerender-from-omnibox=disabled',
-      '--use-mock-keychain',
-      '--single-process'
-    ],
+    args: chromiumArgs,
     userDataDir: '/tmp',
     ignoreHTTPSErrors: true,
     timeout: 10000
