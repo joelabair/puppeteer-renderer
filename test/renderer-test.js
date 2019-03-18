@@ -1,23 +1,32 @@
-'use strict'
+"use strict";
 
-const { expect } = require('chai')
-const createRenderer = require('../src/renderer')
+const { expect } = require("chai");
+const createRenderer = require("../src/renderer");
 
-let renderer = null
+let renderer = null;
 
-before(async function() {
-  renderer = await createRenderer()
-})
+describe("Renderer", function() {
 
-after(async function() {
-  await renderer.close()
-})
+  before(async function() {
+    renderer = await createRenderer();
+  });
 
-describe('Renderer', function() {
-  this.timeout(10 * 1000)
+  after(async function() {
+    await renderer.close();
+  });
 
-  it('should take rendered HTML code', async function() {
-    const html = await renderer.render('http://www.google.com')
-    expect(html).to.be.a('string')
-  })
-})
+  it("should return the rendered HTML", async function() {
+    const html = await renderer.render("http://www.google.com");
+    expect(html).to.be.a("string");
+  });
+
+  it("should return a buffer (PDF) of the HTML", async function() {
+    const buffer = await renderer.pdf("http://www.google.com");
+    expect(buffer).to.be.an.instanceof(Buffer);
+  });
+
+  it("should return a buffer (PNG) of the HTML", async function() {
+    const buffer = await renderer.screenshot("http://www.google.com");
+    expect(buffer).to.be.an.instanceof(Buffer);
+  });
+});
