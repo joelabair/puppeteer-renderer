@@ -101,6 +101,8 @@ class Renderer {
 
   async cleanUp() {
     await this.browser.close();
+    this.browser.process().kill('SIGHUP');
+    this.browser = null;
     this.browser = await puppeteer.launch({
       args: ["--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*', '--deterministic-fetch'],
       ignoreHTTPSErrors: true,
