@@ -7,7 +7,7 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "test": "DEBUG=0 mocha --exit -t 30000"
+    "test": "DEBUG=0 mocha --exit -t 60000"
   },
   "license": "MIT",
   "dependencies": {

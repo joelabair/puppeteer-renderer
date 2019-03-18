@@ -24,6 +24,9 @@ class Renderer {
       page = await this.createPage(url, { timeout, waitUntil });
       const html = await page.content();
       return html;
+    } catch(e) {
+      await this.cleanUp();
+      throw e;
     } finally {
       if (page) {
         await page.close();
@@ -55,6 +58,9 @@ class Renderer {
         landscape: landscape === "true"
       });
       return buffer;
+    } catch(e) {
+      await this.cleanUp();
+      throw e;
     } finally {
       if (page) {
         await page.close();
@@ -83,11 +89,23 @@ class Renderer {
         omitBackground: omitBackground === "true"
       });
       return buffer;
+    } catch(e) {
+      await this.cleanUp();
+      throw e;
     } finally {
       if (page) {
         await page.close();
       }
     }
+  }
+
+  async cleanUp() {
+    await this.browser.close();
+    this.browser = await puppeteer.launch({
+      args: ["--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*', '--deterministic-fetch'],
+      ignoreHTTPSErrors: true,
+      timeout: 10000
+    });
   }
 
   async close() {
