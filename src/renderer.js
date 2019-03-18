@@ -101,7 +101,7 @@ class Renderer {
 
   async cleanUp() {
     await this.browser.close();
-    this.browser.process().kill('SIGHUP');
+    this.browser.process().kill('SIGKILL');
     this.browser = null;
     this.browser = await puppeteer.launch({
       args: ["--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*', '--deterministic-fetch'],
@@ -117,7 +117,7 @@ class Renderer {
 
 async function create() {
   const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*', '--deterministic-fetch'],
+    args: ['--disable-gpu', '--disable-setuid-sandbox', "--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*', '--deterministic-fetch'],
     userDataDir: '/tmp',
     ignoreHTTPSErrors: true,
     timeout: 10000
