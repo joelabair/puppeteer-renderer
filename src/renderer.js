@@ -97,7 +97,7 @@ class Renderer {
 
 async function create() {
   const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*'],
+    args: ["--no-sandbox", "--proxy-server='direct://'", '--proxy-bypass-list=*', '--deterministic-fetch'],
     ignoreHTTPSErrors: true,
     timeout: 10000
   });
