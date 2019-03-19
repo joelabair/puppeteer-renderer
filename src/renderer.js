@@ -12,6 +12,7 @@ const chromiumArgs = [
   '--disable-extensions',
   '--disable-gesture-typing',
   '--disable-gpu',
+  '--num-raster-threads 4',
   '--disable-hang-monitor',
   '--disable-infobars',
   '--disable-notifications',
@@ -20,7 +21,6 @@ const chromiumArgs = [
   '--disable-popup-blocking',
   '--disable-print-preview',
   '--disable-prompt-on-repost',
-  //'--disable-setuid-sandbox',
   '--disable-speech-api',
   '--disable-sync',
   '--disable-tab-for-desktop-share',
@@ -38,7 +38,7 @@ const chromiumArgs = [
   '--no-first-run',
   '--no-zygote',
   '--no-pings',
-  //'--no-sandbox',
+  '--no-sandbox',
   '--single-process'
 ];
 
@@ -141,6 +141,7 @@ class Renderer {
 
   async cleanUp() {
     let browser = await puppeteer.launch({
+      executablePath: '/usr/bin/chromium',
       args: chromiumArgs,
       ignoreHTTPSErrors: true,
       timeout: 10000
@@ -156,6 +157,7 @@ class Renderer {
 
 async function create() {
   const browser = await puppeteer.launch({
+    executablePath: '/usr/bin/chromium',
     args: chromiumArgs,
     userDataDir: '/tmp',
     ignoreHTTPSErrors: true,
