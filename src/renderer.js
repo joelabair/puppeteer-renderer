@@ -14,6 +14,7 @@ const chromiumArgs = [
   '--num-raster-threads 4',
   '--disable-infobars',
   '--disable-notifications',
+  '--font-render-hinting=medium',
   '--disable-offer-store-unmasked-wallet-cards',
   '--disable-offer-upload-credit-cards',
   '--disable-popup-blocking',
