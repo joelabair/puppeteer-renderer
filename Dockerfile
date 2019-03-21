@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y wget --no-install-recommends \
 #ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 #ENV CHROME_DEVEL_SANDBOX /usr/local/sbin/chrome-sandbox
-ENV CHROME_DEVEL_SANDBOX /opt/google/chrome/chrome-sandbox
+#ENV CHROME_DEVEL_SANDBOX /opt/google/chrome/chrome-sandbox
 
 RUN groupmod -g 988 node
 RUN usermod -d /home/node -s /bin/nologin -u 988 -g 988 -G audio,video node
@@ -44,12 +44,6 @@ USER node
 COPY . /opt/app
 
 RUN cd /opt/app && npm install --quiet --production
-#
-#USER root
-#
-#RUN cp /opt/app/node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/chrome_sandbox /usr/local/sbin/chrome-sandbox \
-#    && chown root:root /usr/local/sbin/chrome-sandbox \
-#    && chmod 4755 /usr/local/sbin/chrome-sandbox
 
 USER node
 

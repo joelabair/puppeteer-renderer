@@ -3,14 +3,15 @@
 const puppeteer = require("puppeteer");
 
 const chromiumArgs = [
-  //'--disable-web-security',
-  '--font-render-hinting=medium',
-  '--hide-scrollbars',
-  //'--disable-setuid-sandbox',
-  '--no-zygote',
-  '--no-sandbox',
-  '--single-process'
-];
+  '--no-sandbox'
+  ];
+
+const launchOptions = {
+  args: chromiumArgs,
+  userDataDir: '/tmp',
+  ignoreHTTPSErrors: true,
+  timeout: 10000
+};
 
 class Renderer {
   constructor(browser) {
@@ -57,6 +58,7 @@ class Renderer {
         preferCSSPageSize,
         landscape
       } = extraOptions;
+
       const buffer = await page.pdf({
         ...extraOptions,
         scale: Number(scale || 1),
@@ -68,6 +70,7 @@ class Renderer {
         landscape: landscape === "true"
       });
       return buffer;
+
     } catch(e) {
       await this.cleanUp();
       throw e;
@@ -99,6 +102,7 @@ class Renderer {
         omitBackground: omitBackground === "true"
       });
       return buffer;
+
     } catch(e) {
       await this.cleanUp();
       throw e;
@@ -110,12 +114,10 @@ class Renderer {
   }
 
   async cleanUp() {
-    let browser = await puppeteer.launch({
-      executablePath: '/opt/google/chrome/google-chrome',
-      args: chromiumArgs,
-      ignoreHTTPSErrors: true,
-      timeout: 10000
-    });
+    if (process.env.USE_CHROME_EXE) {
+      launchOptions.executablePath = '/opt/google/chrome/google-chrome';
+    }
+    let browser = await puppeteer.launch(launchOptions);
     await this.browser.close();
     this.browser = browser;
   }
@@ -126,13 +128,10 @@ class Renderer {
 }
 
 async function create() {
-  const browser = await puppeteer.launch({
-    executablePath: '/opt/google/chrome/google-chrome',
-    args: chromiumArgs,
-    userDataDir: '/tmp',
-    ignoreHTTPSErrors: true,
-    timeout: 10000
-  });
+  if (process.env.USE_CHROME_EXE) {
+    launchOptions.executablePath = '/opt/google/chrome/google-chrome';
+  }
+  const browser = await puppeteer.launch(launchOptions);
   return new Renderer(browser);
 }
 
