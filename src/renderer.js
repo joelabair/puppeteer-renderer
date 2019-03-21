@@ -11,7 +11,6 @@ const chromiumArgs = [
   '--disable-dev-shm-usage',
   '--disable-extensions',
   '--disable-gesture-typing',
-  '--num-raster-threads 4',
   '--disable-infobars',
   '--disable-notifications',
   '--disable-web-security',
