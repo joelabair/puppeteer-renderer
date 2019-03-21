@@ -11,7 +11,6 @@ const chromiumArgs = [
   '--disable-dev-shm-usage',
   '--disable-extensions',
   '--disable-gesture-typing',
-  '--disable-gpu',
   '--num-raster-threads 4',
   '--disable-hang-monitor',
   '--disable-infobars',
@@ -52,7 +51,7 @@ class Renderer {
     const page = await this.browser.newPage();
     await page.goto(url, {
       timeout: Number(timeout) || 30 * 1000,
-      waitUntil: waitUntil || "networkidle2"
+      waitUntil: waitUntil || "networkidle0"
     });
     return page;
   }
