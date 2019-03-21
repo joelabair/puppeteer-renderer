@@ -141,7 +141,7 @@ class Renderer {
 
   async cleanUp() {
     let browser = await puppeteer.launch({
-      //executablePath: '/opt/google/chrome/google-chrome',
+      executablePath: '/opt/google/chrome/google-chrome',
       args: chromiumArgs,
       ignoreHTTPSErrors: true,
       timeout: 10000
@@ -157,7 +157,7 @@ class Renderer {
 
 async function create() {
   const browser = await puppeteer.launch({
-    //executablePath: '/opt/google/chrome/google-chrome',
+    executablePath: '/opt/google/chrome/google-chrome',
     args: chromiumArgs,
     userDataDir: '/tmp',
     ignoreHTTPSErrors: true,
