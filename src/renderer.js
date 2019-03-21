@@ -34,6 +34,7 @@ const chromiumArgs = [
   '--metrics-recording-only',
   '--mute-audio',
   '--no-default-browser-check',
+  '--disable-setuid-sandbox',
   '--no-first-run',
   '--no-zygote',
   '--no-pings',
