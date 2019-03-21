@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y wget --no-install-recommends \
 # Uncomment to skip the chromium download when installing puppeteer. If you do,
 # you'll need to launch puppeteer with:
 #     browser.launch({executablePath: 'google-chrome-unstable'})
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+#ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
 
 #ENV CHROME_DEVEL_SANDBOX /usr/local/sbin/chrome-sandbox
 ENV CHROME_DEVEL_SANDBOX /opt/google/chrome/chrome-sandbox
