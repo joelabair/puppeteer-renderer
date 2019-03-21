@@ -157,7 +157,7 @@ class Renderer {
 
 async function create() {
   const browser = await puppeteer.launch({
-    executablePath: '/usr/bin/chromium',
+    executablePath: '/opt/google/chrome/google-chrome',
     args: chromiumArgs,
     userDataDir: '/tmp',
     ignoreHTTPSErrors: true,
