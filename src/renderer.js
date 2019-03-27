@@ -64,8 +64,9 @@ class Renderer {
     const page = await this.browser.newPage();
     await page.goto(url, {
       timeout: Number(timeout) || 60 * 1000,
-      waitUntil: waitUntil || "networkidle0"
+      waitUntil: waitUntil || "domcontentloaded"
     });
+    await page.waitForSelector('body.phRendered');
     return page;
   }
 
