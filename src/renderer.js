@@ -9,7 +9,6 @@ const chromiumArgs = [
     '--disable-client-side-phishing-detection',
     '--disable-cloud-import',
     '--disable-default-apps',
-    '--disable-dev-shm-usage',
     '--disable-extensions',
     '--disable-gesture-typing',
     '--disable-gpu',
