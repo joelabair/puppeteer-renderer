@@ -129,16 +129,15 @@ class Renderer {
       page = await this.createPage(url, { timeout, waitUntil });
       page.setViewport({
         width: Number(extraOptions.width || 800),
-        height: Number(extraOptions.height || 600)
+        height: Number(extraOptions.height || 600),
+        deviceScaleFactor: Number(extraOptions.deviceScaleFactor || 1)
       });
 
       const { fullPage, omitBackground, imageType, quality } = extraOptions;
       const buffer = await page.screenshot({
         ...extraOptions,
         type: imageType || "png",
-        quality:
-          Number(quality) ||
-          (imageType === undefined || imageType == "png" ? 0 : 100),
+        quality: Number(quality) || (imageType === undefined || imageType == "png" ? 0 : 100),
         fullPage: fullPage === "true",
         omitBackground: omitBackground === "true"
       });
