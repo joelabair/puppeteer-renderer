@@ -158,9 +158,18 @@ class Renderer {
     if (process.env.USE_CHROME_EXE) {
       launchOptions.executablePath = '/opt/google/chrome/google-chrome';
     }
-    let browser = await puppeteer.launch(launchOptions);
-    await this.browser.close();
-    this.browser = browser;
+
+    try {
+      await this.browser.close();
+    } catch(i) {
+      // ignore any close error
+    }
+
+    try {
+      this.browser = await puppeteer.launch(launchOptions);
+    } catch (e) {
+      process.exit(1);
+    }
   }
 
   async close() {
