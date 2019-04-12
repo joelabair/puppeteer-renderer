@@ -87,7 +87,7 @@ class Renderer {
   }
 
   async pdf(url, options = {}) {
-    let page = null;
+    let page = null, error = false;
     try {
       const { timeout, waitUntil, ...extraOptions } = options;
       page = await this.createPage(url, { timeout, waitUntil });
@@ -113,27 +113,33 @@ class Renderer {
       return buffer;
 
     } catch(e) {
+      error = true;
       await this.cleanUp();
       throw e;
     } finally {
-      if (page) {
+      if (page && !error) {
         await page.close();
       }
     }
   }
 
   async screenshot(url, options = {}) {
-    let page = null;
+    let page = null, error = false;
     try {
       const { timeout, waitUntil, ...extraOptions } = options;
-      page = await this.createPage(url, { timeout, waitUntil });
-      page.setViewport({
+      const { fullPage, omitBackground, imageType, quality } = extraOptions;
+      const viewport = {
         width: Number(extraOptions.width || 800),
         height: Number(extraOptions.height || 600),
         deviceScaleFactor: Number(extraOptions.deviceScaleFactor || 1)
+      };
+      const page = await this.browser.newPage();
+      await page.setViewport(viewport);
+      await page.goto(url, {
+        timeout: Number(timeout) || 60 * 1000,
+        waitUntil: waitUntil || "domcontentloaded"
       });
-
-      const { fullPage, omitBackground, imageType, quality } = extraOptions;
+      await page.waitForSelector('body.phRendered');
       const buffer = await page.screenshot({
         ...extraOptions,
         type: imageType || "png",
@@ -142,12 +148,12 @@ class Renderer {
         omitBackground: omitBackground === "true"
       });
       return buffer;
-
     } catch(e) {
+      error = true;
       await this.cleanUp();
       throw e;
     } finally {
-      if (page) {
+      if (page && !error) {
         await page.close();
       }
     }
