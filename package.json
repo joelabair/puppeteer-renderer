@@ -13,6 +13,7 @@
   "dependencies": {
     "content-disposition": "^0.5.3",
     "express": "^4.16.4",
+    "generic-pool": "^3.7.1",
     "puppeteer": "^1.14.0"
   },
   "devDependencies": {

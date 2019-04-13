@@ -1,5 +1,6 @@
 "use strict";
 
+const genericPool = require('generic-pool');
 const puppeteer = require("puppeteer");
 
 const chromiumArgs = [
@@ -27,14 +28,32 @@ const launchOptions = {
   timeout: 10000
 };
 
+if (process.env.USE_CHROME_EXE) {
+  launchOptions.executablePath = '/opt/google/chrome/google-chrome';
+}
+
+const factory = {
+  create: async function() {
+    const browser = await puppeteer.launch(launchOptions);
+    const page = await browser.newPage();
+    return page;
+  },
+  destroy: function(puppeteer) {
+    puppeteer.close();
+  },
+};
+
+const browserPagePool = genericPool.createPool(factory, {
+  max: 25,
+  min: 2,
+  maxWaitingClients: 50,
+});
+
 class Renderer {
-  constructor(browser) {
-    this.browser = browser;
-  }
 
   async createPage(url, options = {}) {
     const { timeout, waitUntil } = options;
-    const page = await this.browser.newPage();
+    const page = await browserPagePool.acquire();
     await page.goto(url, {
       timeout: Number(timeout) || 60 * 1000,
       waitUntil: waitUntil || "domcontentloaded"
@@ -49,19 +68,15 @@ class Renderer {
       const { timeout, waitUntil } = options;
       page = await this.createPage(url, { timeout, waitUntil });
       const html = await page.content();
+      await browserPagePool.release(page);
       return html;
     } catch(e) {
-      await this.cleanUp();
-      throw e;
-    } finally {
-      if (page) {
-        await page.close();
-      }
+      await browserPagePool.destroy(page);
     }
   }
 
   async pdf(url, options = {}) {
-    let page = null, error = false;
+    let page = null;
     try {
       const { timeout, waitUntil, ...extraOptions } = options;
       page = await this.createPage(url, { timeout, waitUntil });
@@ -84,21 +99,17 @@ class Renderer {
         printBackground: printBackground === "true",
         landscape: landscape === "true"
       });
+
+      await browserPagePool.release(page);
       return buffer;
 
     } catch(e) {
-      error = true;
-      await this.cleanUp();
-      throw e;
-    } finally {
-      if (page && !error) {
-        await page.close();
-      }
+      await browserPagePool.destroy(page);
     }
   }
 
   async screenshot(url, options = {}) {
-    let page = null, error = false;
+    let page = null;
     try {
       const { timeout, waitUntil, ...extraOptions } = options;
       const { fullPage, omitBackground, imageType, quality } = extraOptions;
@@ -106,7 +117,7 @@ class Renderer {
         width: Number(extraOptions.width || 800),
         height: Number(extraOptions.height || 600)
       };
-      const page = await this.browser.newPage();
+      const page = await browserPagePool.acquire();
       await page.setViewport(viewport);
       await page.goto(url, {
         timeout: Number(timeout) || 60 * 1000,
@@ -120,46 +131,19 @@ class Renderer {
         fullPage: fullPage === "true",
         omitBackground: omitBackground === "true"
       });
+
+      await browserPagePool.release(page);
       return buffer;
-    } catch(e) {
-      error = true;
-      await this.cleanUp();
-      throw e;
-    } finally {
-      if (page && !error) {
-        await page.close();
-      }
+
+    }  catch(e) {
+      await browserPagePool.destroy(page);
     }
   }
 
-  async cleanUp() {
-    if (process.env.USE_CHROME_EXE) {
-      launchOptions.executablePath = '/opt/google/chrome/google-chrome';
-    }
-
-    let newBrowser;
-
-    this.browser.close().catch(ignore => {});
-
-    try {
-      newBrowser = await puppeteer.launch(launchOptions);
-      this.browser = newBrowser;
-    } catch (e) {
-      process.exit(1);
-    }
-  }
-
-  async close() {
-    await this.browser.close();
-  }
 }
 
 async function create() {
-  if (process.env.USE_CHROME_EXE) {
-    launchOptions.executablePath = '/opt/google/chrome/google-chrome';
-  }
-  const browser = await puppeteer.launch(launchOptions);
-  return new Renderer(browser);
+  return new Renderer();
 }
 
 module.exports = create;
