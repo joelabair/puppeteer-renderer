@@ -45,11 +45,18 @@ COPY . /opt/app
 
 RUN cd /opt/app && npm install --quiet --production
 
+USER root
+
+RUN cd /opt/app/node_modules/puppeteer/.local-chromium/linux-*/chrome-linux/ \
+          && install -o root -g root -m 4755 chrome_sandbox /usr/local/sbin/chrome-sandbox
+
 USER node
 
 EXPOSE 3000
 
 ENV NODE_FORKS 1
+
+ENV CHROME_DEVEL_SANDBOX /usr/local/sbin/chrome-sandbox
 
 WORKDIR /opt/app
 
