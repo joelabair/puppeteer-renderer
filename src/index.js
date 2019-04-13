@@ -65,7 +65,6 @@ app.use(async (req, res, next) => {
         res.status(200).send(html);
     }
   } catch (e) {
-    await renderer.cleanUp();
     next(e);
   }
 });
