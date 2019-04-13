@@ -77,7 +77,13 @@ class Renderer {
       await browserPagePool.destroy(page);
       return html;
     } catch(e) {
-      await browserPagePool.destroy(page);
+      if (page) {
+        try {
+          await browserPagePool.destroy(page);
+        } catch (e) {
+          page.browser().close().catch(e => console.error(e));
+        }
+      }
     }
   }
 
@@ -110,7 +116,13 @@ class Renderer {
       return buffer;
 
     } catch(e) {
-      await browserPagePool.destroy(page);
+      if (page) {
+        try {
+          await browserPagePool.destroy(page);
+        } catch (e) {
+          page.browser().close().catch(e => console.error(e));
+        }
+      }
     }
   }
 
@@ -142,7 +154,13 @@ class Renderer {
       return buffer;
 
     }  catch(e) {
-      await browserPagePool.destroy(page);
+      if (page) {
+        try {
+          await browserPagePool.destroy(page);
+        } catch (e) {
+          page.browser().close().catch(e => console.error(e));
+        }
+      }
     }
   }
 
