@@ -40,7 +40,7 @@ const factory = {
   },
   destroy: async function(puppeteer) {
     try {
-      await puppeteer.close();
+      await puppeteer.browser().close();
     } catch(e) {
       process.exit(1);
     }
