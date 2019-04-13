@@ -38,9 +38,13 @@ const factory = {
     const page = await browser.newPage();
     return page;
   },
-  destroy: function(puppeteer) {
-    puppeteer.close();
-  },
+  destroy: async function(puppeteer) {
+    try {
+      await puppeteer.close();
+    } catch(e) {
+      process.exit(1);
+    }
+  }
 };
 
 const browserPagePool = genericPool.createPool(factory, {
