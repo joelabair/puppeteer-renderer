@@ -12,7 +12,7 @@ const chromiumArgs = [
     '--disable-extensions',
     '--disable-gpu',
     '--disable-dev-shm-usage',
-    '--disable-setuid-sandbox',
+    //'--disable-setuid-sandbox',
     '--no-default-browser-check',
     '--no-first-run',
     '--no-pings',
