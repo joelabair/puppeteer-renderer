@@ -44,9 +44,11 @@ const factory = {
 };
 
 const browserPagePool = genericPool.createPool(factory, {
-  max: 25,
-  min: 2,
+  max: 15,
+  min: 5,
   maxWaitingClients: 50,
+  softIdleTimeoutMillis: 15000,
+  evictionRunIntervalMillis: 5000
 });
 
 class Renderer {
@@ -68,7 +70,7 @@ class Renderer {
       const { timeout, waitUntil } = options;
       page = await this.createPage(url, { timeout, waitUntil });
       const html = await page.content();
-      await browserPagePool.release(page);
+      await browserPagePool.destroy(page);
       return html;
     } catch(e) {
       await browserPagePool.destroy(page);
@@ -100,7 +102,7 @@ class Renderer {
         landscape: landscape === "true"
       });
 
-      await browserPagePool.release(page);
+      await browserPagePool.destroy(page);
       return buffer;
 
     } catch(e) {
@@ -132,7 +134,7 @@ class Renderer {
         omitBackground: omitBackground === "true"
       });
 
-      await browserPagePool.release(page);
+      await browserPagePool.destroy(page);
       return buffer;
 
     }  catch(e) {
