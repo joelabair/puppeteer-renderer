@@ -3,8 +3,10 @@
 const puppeteer = require("puppeteer");
 
 const chromiumArgs = [
-  '--disable-accelerated-2d-canvas',
-    '--disable-background-timer-throttling',
+   '--proxy-server="direct://"',
+    '--proxy-bypass-list=*',
+    '--window-size=1920x1080',
+    '--disable-accelerated-2d-canvas',
     '--disable-breakpad',
     '--disable-client-side-phishing-detection',
     '--disable-cloud-import',
@@ -12,6 +14,7 @@ const chromiumArgs = [
     '--disable-extensions',
     '--disable-gesture-typing',
     '--disable-gpu',
+    '--disable-dev-shm-usage',
     '--disable-hang-monitor',
     '--disable-infobars',
     '--disable-notifications',
@@ -21,7 +24,6 @@ const chromiumArgs = [
     '--disable-print-preview',
     '--disable-prompt-on-repost',
     '--disable-setuid-sandbox',
-    '--disable-software-rasterizer',
     '--disable-speech-api',
     '--disable-sync',
     '--disable-tab-for-desktop-share',
@@ -130,8 +132,7 @@ class Renderer {
       const { fullPage, omitBackground, imageType, quality } = extraOptions;
       const viewport = {
         width: Number(extraOptions.width || 800),
-        height: Number(extraOptions.height || 600),
-        deviceScaleFactor: Number(extraOptions.deviceScaleFactor || 1)
+        height: Number(extraOptions.height || 600)
       };
       const page = await this.browser.newPage();
       await page.setViewport(viewport);
@@ -164,14 +165,13 @@ class Renderer {
       launchOptions.executablePath = '/opt/google/chrome/google-chrome';
     }
 
-    try {
-      await this.browser.close();
-    } catch(i) {
-      // ignore any close error
-    }
+    let newBrowser;
+
+    this.browser.close().catch(ignore => {});
 
     try {
-      this.browser = await puppeteer.launch(launchOptions);
+      newBrowser = await puppeteer.launch(launchOptions);
+      this.browser = newBrowser;
     } catch (e) {
       process.exit(1);
     }
