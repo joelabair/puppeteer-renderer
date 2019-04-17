@@ -41,6 +41,7 @@ app.use(async (req, res, next) => {
             filename = filename.substring(0, extDotPosition);
         }
         const pdf = await renderer.pdf(url, options);
+        if (!pdf) return res.status(500).end();
         res
           .set({
             "Content-Type": "application/pdf",
@@ -52,6 +53,7 @@ app.use(async (req, res, next) => {
 
       case "screenshot":
         const image = await renderer.screenshot(url, options);
+        if (!image) return res.status(500).end();
         res
           .set({
             "Content-Type": "image/png",
@@ -62,6 +64,7 @@ app.use(async (req, res, next) => {
 
       default:
         const html = await renderer.render(url, options);
+        if (!html) return res.status(500).end();
         res.status(200).send(html);
     }
   } catch (e) {
