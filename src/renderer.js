@@ -47,6 +47,8 @@ const factory = {
       const browser = page.browser();
       await page.close();
       await browser.close();
+      page.removeAllListeners();
+      browser.removeAllListeners();
     } catch(e) {
       process.exit(1);
     }
