@@ -60,6 +60,6 @@ ENV CHROME_DEVEL_SANDBOX /usr/local/sbin/chrome-sandbox
 
 WORKDIR /opt/app
 
-CMD dumb-init node src/index.js
+CMD dumb-init node --trace-warnings src/index.js
 
 # docker build -t joelabair/puppeteer .
