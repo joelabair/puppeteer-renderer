@@ -3,6 +3,8 @@
 const genericPool = require('generic-pool');
 const puppeteer = require("puppeteer");
 
+process.setMaxListeners(128);
+
 const chromiumArgs = [
    '--proxy-server="direct://"',
     '--proxy-bypass-list=*',
@@ -47,8 +49,6 @@ const factory = {
       const browser = page.browser();
       await page.close();
       await browser.close();
-      page.removeAllListeners();
-      browser.removeAllListeners();
     } catch(e) {
       process.exit(1);
     }
