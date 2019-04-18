@@ -56,7 +56,7 @@ const factory = {
 };
 
 const browserPagePool = genericPool.createPool(factory, {
-  max: 16,
+  max: 20,
   min: 4,
   maxWaitingClients: 128,
   softIdleTimeoutMillis: 3000,
