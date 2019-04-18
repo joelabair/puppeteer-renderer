@@ -56,9 +56,9 @@ const factory = {
 };
 
 const browserPagePool = genericPool.createPool(factory, {
-  max: 25,
-  min: 5,
-  maxWaitingClients: 150,
+  max: 16,
+  min: 4,
+  maxWaitingClients: 128,
   softIdleTimeoutMillis: 3000,
   evictionRunIntervalMillis: 3000
 });
