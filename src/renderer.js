@@ -34,13 +34,19 @@ if (process.env.USE_CHROME_EXE) {
 
 const factory = {
   create: async function() {
-    const browser = await puppeteer.launch(launchOptions);
-    const page = await browser.newPage();
-    return page;
-  },
-  destroy: async function(puppeteer) {
     try {
-      await puppeteer.browser().close();
+      let browser = await puppeteer.launch(launchOptions);
+      return await browser.newPage();
+    } catch (e) {
+      console.error(e);
+      process.exit(1);
+    }
+  },
+  destroy: async function(page) {
+    try {
+      const browser = page.browser();
+      await page.close();
+      await browser.close();
     } catch(e) {
       process.exit(1);
     }
