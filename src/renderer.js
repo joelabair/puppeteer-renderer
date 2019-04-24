@@ -66,6 +66,7 @@ const browserPagePool = genericPool.createPool(factory, {
 class Renderer {
 
   async createPage(url, options = {}) {
+    console.warn(url);
     const { timeout, waitUntil } = options;
     const page = await browserPagePool.acquire();
     await page.goto(url, {
@@ -77,13 +78,12 @@ class Renderer {
   }
 
   async render(url, options = {}) {
-    let page = null;
+    let page = null, html;
     try {
       const { timeout, waitUntil } = options;
       page = await this.createPage(url, { timeout, waitUntil });
-      const html = await page.content();
-      await browserPagePool.destroy(page);
-      return html;
+      html = await page.content();
+      await browserPagePool.release(page);
     } catch(e) {
       if (page) {
         try {
@@ -93,6 +93,7 @@ class Renderer {
         }
       }
     }
+    return html;
   }
 
   async pdf(url, options = {}) {
@@ -120,7 +121,7 @@ class Renderer {
         landscape: landscape === "true"
       });
 
-      await browserPagePool.destroy(page);
+      await browserPagePool.release(page);
       return buffer;
 
     } catch(e) {
@@ -158,7 +159,7 @@ class Renderer {
         omitBackground: omitBackground === "true"
       });
 
-      await browserPagePool.destroy(page);
+      await browserPagePool.release(page);
       return buffer;
 
     }  catch(e) {
