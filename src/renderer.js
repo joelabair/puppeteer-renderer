@@ -67,13 +67,15 @@ class Renderer {
 
   async createPage(url, options = {}) {
     console.warn(url);
-    const { timeout, waitUntil } = options;
+    const { timeout, waitUntil, waitForSelector } = options;
     const page = await browserPagePool.acquire();
     await page.goto(url, {
       timeout: Number(timeout) || 60 * 1000,
       waitUntil: waitUntil || "domcontentloaded"
     });
-    await page.waitForSelector('body.phRendered');
+    if  (waitForSelector) {
+      await page.waitForSelector('waitForSelector');
+    }
     return page;
   }
 
@@ -138,7 +140,7 @@ class Renderer {
   async screenshot(url, options = {}) {
     let page = null;
     try {
-      const { timeout, waitUntil, ...extraOptions } = options;
+      const { timeout, waitUntil, waitForSelector, ...extraOptions } = options;
       const { fullPage, omitBackground, imageType, quality } = extraOptions;
       const viewport = {
         width: Number(extraOptions.width || 800),
@@ -150,7 +152,9 @@ class Renderer {
         timeout: Number(timeout) || 60 * 1000,
         waitUntil: waitUntil || "domcontentloaded"
       });
-      await page.waitForSelector('body.phRendered');
+      if  (waitForSelector) {
+        await page.waitForSelector('waitForSelector');
+      }
       const buffer = await page.screenshot({
         ...extraOptions,
         type: imageType || "png",
