@@ -6,9 +6,7 @@ const puppeteer = require("puppeteer");
 process.setMaxListeners(128);
 
 const chromiumArgs = [
-   '--proxy-server="direct://"',
-    '--proxy-bypass-list=*',
-    '--window-size=1920x1080',
+    '--ignore-certificate-errors',
     '--disable-accelerated-2d-canvas',
     '--disable-default-apps',
     '--disable-extensions',
@@ -16,6 +14,7 @@ const chromiumArgs = [
     '--disable-dev-shm-usage',
     //'--disable-setuid-sandbox',
     '--no-default-browser-check',
+    '--hide-scrollbars',
     '--no-first-run',
     '--no-pings',
     '--no-sandbox',
