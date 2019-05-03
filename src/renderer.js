@@ -22,6 +22,13 @@ const chromiumArgs = [
     '--single-process'
   ];
 
+if (process.env.NODE_ENV === 'development') {
+  chromiumArgs.push(
+    '--disable-web-security',
+    '--allow-running-insecure-content'
+  );
+}
+
 const launchOptions = {
   args: chromiumArgs,
   userDataDir: '/tmp',
